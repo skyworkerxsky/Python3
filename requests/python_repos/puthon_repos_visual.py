@@ -1,13 +1,22 @@
 import requests
-from plotly.graph_objs import Bar
 from plotly import offline
+import json
 
-# Создание вызова API и сохранение ответа.
-url = "https://api.github.com/search/repositories?q=language:python&sort=stars"
-r = requests.get(url)
+readable_file = 'data/readable_hn_data.json'
+response_dict = {}
 
-# Сохранение ответа API в переменной.
-response_dict = r.json()
+try:
+    file = open('data/readable_hn_data.json')
+    with open(readable_file) as f:
+        response_dict = json.load(f)
+except:
+    # Создание вызова API и сохранение ответа.
+    url = "https://api.github.com/search/repositories?q=language:python&sort=stars"
+    r = requests.get(url)
+    # Анализ структуры данных.
+    response_dict = r.json()
+    with open(readable_file, 'w') as f:
+        json.dump(response_dict, f)
 
 repo_dicts = response_dict['items']
 stars, labels, repo_links = [], [], []
